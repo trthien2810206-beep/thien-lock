@@ -1,0 +1,20 @@
+name: Compile iOS Dylib
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile PasswordLock.dylib
+        run: |
+          xcrun -sdk iphoneos clang -dynamiclib -arch arm64 -install_name @rpath/libPasswordLock.dylib PasswordLock.m -framework Foundation -framework UIKit -o libPasswordLock.dylib
+
+      - name: Upload compiled dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: libPasswordLock.dylib
+          path: libPasswordLock.dylib
